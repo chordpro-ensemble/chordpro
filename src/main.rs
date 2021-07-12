@@ -3,6 +3,12 @@ use std::fs;
 use std::io::BufWriter;
 
 mod lexer {
+    pub enum Token {
+        ChordL,
+        ChordR,
+        DirectiveL,
+        DirectiveR,
+    }
     pub fn process(song: String) -> String {
         return song;
     }
