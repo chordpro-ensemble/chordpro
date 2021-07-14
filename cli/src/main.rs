@@ -1,18 +1,7 @@
+use core::lexer;
 use printpdf::*;
 use std::fs;
 use std::io::BufWriter;
-
-mod lexer {
-    pub enum Token {
-        ChordL,
-        ChordR,
-        DirectiveL,
-        DirectiveR,
-    }
-    pub fn process(song: String) -> String {
-        return song;
-    }
-}
 
 fn main() {
     let (doc, page1, layer1) = PdfDocument::new("Song Title", Mm(247.0), Mm(210.0), "Layer 1");
