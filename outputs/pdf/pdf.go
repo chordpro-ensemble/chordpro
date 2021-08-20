@@ -1,12 +1,18 @@
 package pdf
 
 import (
+	"io"
+
+	"github.com/chris-skud/chordpro2/chordpro/types"
 	"github.com/jung-kurt/gofpdf"
 )
 
-type Formatter struct{}
+type Processor struct{}
 
-func (f *Formatter) Format(tokenStream []byte) []byte {
+// Processor is the PDF specific processing of the token stream (lexed song)
+// whose bytes are written to the passed writer. It does need knowledge
+// of the lexer grammar
+func (p *Processor) Process(tokenTypes []types.TokenType, w io.Writer) error {
 	pdf := gofpdf.New("P", "mm", "A4", "")
 	pdf.AddPage()
 	pdf.SetFont("Arial", "", 14)
@@ -25,11 +31,13 @@ func (f *Formatter) Format(tokenStream []byte) []byte {
 	pdf.Ln(10)
 
 	// body
-	pdf.Cell(100, 10, "furst")
-	pdf.Ln(-1)
-	pdf.Cell(100, 10, "second asdf")
+	// for _, block := range contentBlocks {
+	// 	pdf.Cell(100, 10, block.Content)
+	// 	pdf.Ln(-1)
+	// }
 
 	// write the file
 	_ = pdf.OutputFileAndClose("simple.pdf")
-	return []byte("")
+
+	return nil
 }
