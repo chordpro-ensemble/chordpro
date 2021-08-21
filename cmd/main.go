@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/chris-skud/chordpro2/chordpro"
@@ -18,6 +19,12 @@ var (
 	}
 )
 
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
+
 func Run(cmd *cobra.Command, args []string) {
 	// cp := chordpro.Processor{
 	// 	Formatter: &pdf.Formatter{},
@@ -32,7 +39,13 @@ func Run(cmd *cobra.Command, args []string) {
 
 	processor := chordpro.NewProcessor(&pdf.Processor{})
 	r := bufio.NewReader(strings.NewReader("[D]This is a [C+] good song\n[C(maj7)]It is"))
-	processor.Process(r)
+	f, err := os.Create("simple.pdf")
+	check(err)
+
+	defer f.Close()
+	// w := bufio.NewWriter(f)
+	err = processor.Process(r, f)
+	check(err)
 }
 
 func main() {

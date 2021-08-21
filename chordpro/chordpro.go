@@ -9,7 +9,7 @@ import (
 )
 
 type OutputProcessor interface {
-	Process(tokenTypes []types.TokenType, w io.Writer) error
+	Process(tokenTypes []types.Token, w io.Writer) error
 }
 
 func NewProcessor(outputProcessor OutputProcessor) *Processor {
@@ -23,7 +23,13 @@ type Processor struct {
 	outputProcessor OutputProcessor
 }
 
-func (p *Processor) Process(reader io.Reader) error {
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
+
+func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 
 	l := parse.NewLexer(reader)
 	var tokens []types.Token
@@ -36,20 +42,24 @@ func (p *Processor) Process(reader io.Reader) error {
 		tokens = append(tokens, types.Token{Pos: types.Position{Line: pos.Line, Column: pos.Column}, Typ: tok, Literal: lit})
 	}
 
-	lineCount := tokens[len(tokens)-1].Pos.Line
-	blocks := make([]types.ContentBlock, lineCount+1)
-	for _, token := range tokens {
-		blockPos := token.Pos.Line - 1 // adjust for 0 based slice
-		switch token.Typ {
-		case types.Lyric:
-			blocks[blockPos].Content += token.Literal
-		case types.Chord:
-			blocks[blockPos].Content += token.Literal
-		}
+	check(
+		p.outputProcessor.Process(tokens, writer),
+	)
 
-	}
+	// lineCount := tokens[len(tokens)-1].Pos.Line
+	// blocks := make([]types.ContentBlock, lineCount+1)
+	// for _, token := range tokens {
+	// 	blockPos := token.Pos.Line - 1 // adjust for 0 based slice
+	// 	switch token.Typ {
+	// 	case types.Lyric:
+	// 		blocks[blockPos].Content += token.Literal
+	// 	case types.Chord:
+	// 		blocks[blockPos].Content += token.Literal
+	// 	}
 
-	fmt.Printf("\n%+v\n", blocks)
+	// }
+
+	fmt.Printf("\n%+v\n", tokens)
 	// contentBlocks := []types.ContentBlock{}
 
 	return nil
