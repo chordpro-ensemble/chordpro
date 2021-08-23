@@ -2,6 +2,7 @@ package pdf
 
 import (
 	"io"
+	"strings"
 
 	"github.com/chris-skud/chordpro2/chordpro/types"
 	"github.com/jung-kurt/gofpdf"
@@ -12,10 +13,9 @@ type Processor struct{}
 // Processor is the PDF specific processing of the token stream (lexed song)
 // whose bytes are written to the passed writer. It does need knowledge
 // of the lexer grammar
-func (p *Processor) Process(tokens []types.Token, w io.Writer) error {
+func (p *Processor) Process(sheetLines []types.SheetLine, w io.Writer) error {
 	pdf := gofpdf.New("P", "mm", "A4", "")
 	pdf.AddPage()
-	pdf.SetFont("Arial", "", 14)
 
 	title := "Beautiful Song"
 
@@ -24,29 +24,48 @@ func (p *Processor) Process(tokens []types.Token, w io.Writer) error {
 	pdf.SetTitle(title, true)
 
 	// header
-	pdf.SetFont("Arial", "B", 15)
+	pdf.SetFont("Courier", "", 12)
 	wd := pdf.GetStringWidth(title) + 6
 	pdf.SetX((210 - wd) / 2)
 	pdf.Cell(wd, 9, title)
 	pdf.Ln(10)
 
-	// body
-	lineCount := tokens[len(tokens)-1].Pos.Line
-	rows := make([]types.ContentBlock, lineCount+1)
-	for _, token := range tokens {
-		rowPos := token.Pos.Line - 1 // adjust for 0 based slice
-		switch token.Typ {
-		case types.Lyric:
-			rows[rowPos].Content += token.Literal
-		case types.Chord:
-			rows[rowPos].Content += token.Literal
+	for _, line := range sheetLines {
+		switch line.Type {
+		case types.LyricChord:
+
+			// Process the chord line if there are chords
+			if len(line.LyricChordSet.Chords) != 0 {
+				pdf.SetX(5)
+				var chords string
+				for _, chordToken := range line.LyricChordSet.Chords {
+					pad := spaces(chordToken.Pos.Column - len(chords))
+					chords += pad + chordToken.Literal
+				}
+				pdf.CellFormat(200, 6, chords, "0", 0, "", false, 0, "")
+				pdf.Ln(-1)
+			}
+
+			// Process the lyrics line
+			pdf.SetX(5)
+			var lyrics string
+			for _, lyricToken := range line.LyricChordSet.Lyrics {
+				lyrics += lyricToken.Literal
+			}
+			pdf.CellFormat(200, 6, lyrics, "0", 0, "", false, 0, "")
+			pdf.Ln(10)
+
+		//case types.Directive:
+		default:
 		}
 	}
 
-	for _, row := range rows {
-		pdf.Cell(100, 10, row.Content)
-		pdf.Ln(-1)
-	}
+	// how the perl project does it
+	// https://github.com/ChordPro/chordpro/blob/24ee42236c093063c03cda9f7545e9b9fd117c1a/lib/App/Music/ChordPro/Output/PDF.pm#L1292
 
 	return pdf.Output(w)
+}
+
+func spaces(count int) string {
+	return strings.Repeat(" ", count)
 }

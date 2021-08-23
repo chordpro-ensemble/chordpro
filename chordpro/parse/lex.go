@@ -17,7 +17,7 @@ type Lexer struct {
 
 func NewLexer(reader io.Reader) *Lexer {
 	return &Lexer{
-		pos:    types.Position{Line: 1, Column: 0},
+		pos:    types.Position{Line: 0, Column: 0},
 		reader: bufio.NewReader(reader),
 	}
 }
