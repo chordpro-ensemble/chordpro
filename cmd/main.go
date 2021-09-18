@@ -18,7 +18,8 @@ var (
 		Run:   Run,
 	}
 
-	songFile string
+	chordproFile string
+	outputFile   string
 )
 
 func check(e error) {
@@ -30,11 +31,11 @@ func check(e error) {
 func Run(cmd *cobra.Command, args []string) {
 	processor := chordpro.NewProcessor(&pdf.Processor{})
 
-	b, err := os.ReadFile(songFile)
+	b, err := os.ReadFile(chordproFile)
 	check(err)
 
 	r := bufio.NewReader(bytes.NewReader(b))
-	f, err := os.Create("simple.pdf")
+	f, err := os.Create(outputFile)
 	check(err)
 	defer f.Close()
 
@@ -44,7 +45,8 @@ func Run(cmd *cobra.Command, args []string) {
 }
 
 func main() {
-	rootCmd.PersistentFlags().StringVarP(&songFile, "song", "v", "examples/simple.cho", "path to song file")
+	rootCmd.PersistentFlags().StringVarP(&chordproFile, "song", "s", "examples/simple.cho", "--song=~/awesome_song.cho")
+	rootCmd.PersistentFlags().StringVarP(&outputFile, "outputFile", "o", "examples/simple.pdf", "--outputFile=~/awesome_song.pdf")
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 	}
