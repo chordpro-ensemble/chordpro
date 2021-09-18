@@ -51,8 +51,8 @@ func (l *Lexer) Lex() (types.Position, types.TokenType, string) {
 		default:
 			if unicode.IsSpace(r) {
 				return l.pos, types.Space, " "
-			} else if unicode.IsLetter(r) {
-				// backup and let lexLyric rescan the beginning of the ident
+			} else if l.isLyric(r) {
+				// backup and let lexLyric rescan the beginning of the lyric
 				startPos := l.pos
 				l.backup()
 				lit := l.lexLyric()
@@ -91,7 +91,7 @@ func (l *Lexer) lexLyric() string {
 		}
 
 		l.pos.Column++
-		if unicode.IsLetter(r) {
+		if l.isLyric(r) {
 			lyr = lyr + string(r)
 		} else {
 			// scanned something not in the lyric
@@ -99,6 +99,10 @@ func (l *Lexer) lexLyric() string {
 			return lyr
 		}
 	}
+}
+
+func (l *Lexer) isLyric(r rune) bool {
+	return unicode.IsLetter(r) || unicode.IsPunct(r) && string(r) != "["
 }
 
 // lexChord scans the input until the end of the chord then returns the chord literal
