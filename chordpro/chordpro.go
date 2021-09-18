@@ -1,7 +1,6 @@
 package chordpro
 
 import (
-	"fmt"
 	"io"
 
 	"github.com/chris-skud/chordpro2/chordpro/parse"
@@ -33,8 +32,8 @@ func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 
 	l := parse.NewLexer(reader)
 	var tokens []types.Token
-	var chordCount int
-	var currLine int
+	// var chordCount int
+	// var currLine int
 	for {
 		pos, tok, lit := l.Lex()
 		if tok == types.EOF {
@@ -43,13 +42,13 @@ func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 
 		// adjust the position of the chord to exclude the opening square bracket
 		// if it is not the first
-		if tok == types.Chord {
-			if currLine != (pos.Line) {
-				currLine = 0
-			}
-			pos.Column = pos.Column - 1 - chordCount
-			chordCount++
-		}
+		// if tok == types.Chord {
+		// 	if currLine != (pos.Line) {
+		// 		currLine = 0
+		// 	}
+		// 	pos.Column = pos.Column - 1 - chordCount
+		// 	chordCount++
+		// }
 
 		tokens = append(tokens, types.Token{Pos: types.Position{Line: pos.Line, Column: pos.Column}, Typ: tok, Literal: lit})
 	}
@@ -62,7 +61,7 @@ func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 	// whether the linear input-as-last-output really fits as any processing may need the original token list vs. a previously
 	// mutated sheet list. Stuff like formatting directives ({soc}...{eoc)) are a wrinkle.
 
-	lineCount := tokens[len(tokens)-1].Pos.Line
+	lineCount := tokens[len(tokens)-1].Pos.Line + 1
 	sheetLines := make([]types.SheetLine, lineCount)
 	for _, token := range tokens {
 		linePos := token.Pos.Line
@@ -99,7 +98,6 @@ func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 
 	// }
 
-	fmt.Printf("\n%+v\n", tokens)
 	// contentBlocks := []types.ContentBlock{}
 
 	return nil

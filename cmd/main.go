@@ -17,6 +17,8 @@ var (
 		Short: "Convert chordpro formatted files to formatted, printable versions",
 		Run:   Run,
 	}
+
+	songFile string
 )
 
 func check(e error) {
@@ -28,7 +30,7 @@ func check(e error) {
 func Run(cmd *cobra.Command, args []string) {
 	processor := chordpro.NewProcessor(&pdf.Processor{})
 
-	b, err := os.ReadFile("../examples/simple.cho")
+	b, err := os.ReadFile(songFile)
 	check(err)
 
 	r := bufio.NewReader(bytes.NewReader(b))
@@ -42,6 +44,7 @@ func Run(cmd *cobra.Command, args []string) {
 }
 
 func main() {
+	rootCmd.PersistentFlags().StringVarP(&songFile, "song", "v", "examples/simple.cho", "path to song file")
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 	}
