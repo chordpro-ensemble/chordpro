@@ -32,8 +32,8 @@ func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 
 	l := parse.NewLexer(reader)
 	var tokens []types.Token
-	// var chordCount int
-	// var currLine int
+	var offset int
+	var currLine int
 	for {
 		pos, tok, lit := l.Lex()
 		if tok == types.EOF {
@@ -41,14 +41,21 @@ func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 		}
 
 		// adjust the position of the chord to exclude the opening square bracket
-		// if it is not the first
-		// if tok == types.Chord {
-		// 	if currLine != (pos.Line) {
-		// 		currLine = 0
-		// 	}
-		// 	pos.Column = pos.Column - 1 - chordCount
-		// 	chordCount++
-		// }
+		if tok == types.Chord {
+
+			// move currLine to next line and reset offset if processing new line
+			if pos.Line > currLine {
+				// move to the next line and reset chord count
+				currLine = pos.Line
+				offset = 0
+			}
+
+			// the offset is a sum of characters that includes "[" + "chord" + "]"
+			pos.Column = pos.Column - 1 - offset // account for opening bracket
+
+			// add this chord to the offset for the next iteration, including 2 spaces for open/closed brackets
+			offset = offset + len(lit) + 2
+		}
 
 		tokens = append(tokens, types.Token{Pos: types.Position{Line: pos.Line, Column: pos.Column}, Typ: tok, Literal: lit})
 	}
