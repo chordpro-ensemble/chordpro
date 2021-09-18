@@ -2,3 +2,4 @@
 *.pdf
 **/target
 **/bin
+.vscode
