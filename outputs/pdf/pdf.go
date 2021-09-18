@@ -50,6 +50,10 @@ func (p *Processor) Process(sheetLines []types.SheetLine, w io.Writer) error {
 			pdf.SetX(5)
 			var lyrics string
 			for _, lyricToken := range line.LyricChordSet.Lyrics {
+
+				// ok, this is a hack around what may be a larger
+				// issue with the pdf package not properly supporting utf-8 chars
+				lyricToken.Literal = strings.ReplaceAll(lyricToken.Literal, "’", "'")
 				lyrics += lyricToken.Literal
 			}
 			pdf.CellFormat(200, 6, lyrics, "0", 0, "", false, 0, "")
