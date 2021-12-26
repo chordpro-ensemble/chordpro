@@ -31,7 +31,7 @@ func check(e error) {
 func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 
 	l := parse.NewLexer(reader)
-	var tokens []types.Token
+	var tokens []types.Token2
 	var offset int
 	var currLine int
 	for {
@@ -57,7 +57,7 @@ func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 			offset = offset + len(lit) + 2
 		}
 
-		tokens = append(tokens, types.Token{Pos: types.Position{Line: pos.Line, Column: pos.Column}, Typ: tok, Literal: lit})
+		tokens = append(tokens, types.Token2{Pos: types.Position{Line: pos.Line, Column: pos.Column}, Typ: tok, Literal: lit})
 	}
 
 	// convert tokens slice into typed rows of token slices,

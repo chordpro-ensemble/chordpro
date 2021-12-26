@@ -56,6 +56,13 @@ func (p *Processor) Process(sheetLines []types.SheetLine, w io.Writer) error {
 			// Process the lyrics line
 			pdf.SetX(5)
 			// var lyrics string
+			// if the the lyric had a reference to any chords contained within, then you could process the lyric in one loop and position the chords while writing the lyric...
+			// type Token struct {
+			// 	Pos     Position
+			// 	Typ     TokenType
+			// 	Literal string
+			//
+			// }
 			for _, lyricToken := range line.LyricChordSet.Lyrics {
 
 				// ok, this is a hack around what may be a larger
