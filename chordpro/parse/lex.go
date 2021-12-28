@@ -135,6 +135,8 @@ func (l *Lexer) lexChord() string {
 // output formatter. something like {soc} may be really tricky to deal with
 // in the outut formatter althoug i guess you just apply a style until
 // the closing bracket is found
+
+// a directive may just have a special rule in that it's open and close are whole lines
 func (l *Lexer) lexDirective() string {
 	var drctv string
 	for {
