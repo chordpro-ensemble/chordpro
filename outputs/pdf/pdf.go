@@ -1,6 +1,7 @@
 package pdf
 
 import (
+	"fmt"
 	"io"
 	"strings"
 
@@ -30,9 +31,6 @@ func (p *Processor) Process(sheetLines []types.SheetLine, w io.Writer) error {
 	pdf.Cell(wd, 9, title)
 	pdf.Ln(10)
 
-	// b, _ := json.MarshalIndent(sheetLines, "", "  ")
-	// fmt.Println(string(b))
-
 	for _, line := range sheetLines {
 		switch line.Type {
 		case types.LyricChord:
@@ -44,7 +42,6 @@ func (p *Processor) Process(sheetLines []types.SheetLine, w io.Writer) error {
 				// issue with the pdf package not properly supporting utf-8 chars
 				lyricToken.Literal = strings.ReplaceAll(lyricToken.Literal, "’", "'")
 
-				var chord string
 				preX, preY := pdf.GetXY()
 				// p, _ := pdf.GetFontSize()
 				// w := float64(len(lyricToken.Literal)) * p
@@ -54,8 +51,12 @@ func (p *Processor) Process(sheetLines []types.SheetLine, w io.Writer) error {
 				if len(lyricToken.Chords) > 0 {
 					postLyricX, postLyricY := pdf.GetXY()
 					pdf.SetXY(preX, preY-5)
-					cw := pdf.GetStringWidth(chord)
-					pdf.CellFormat(cw, 6, lyricToken.Chords[0].Literal, "0", 0, "", false, 0, "")
+					for _, chord := range lyricToken.Chords {
+						fmt.Println(chord.Literal)
+						cw := pdf.GetStringWidth(chord.Literal)
+						pdf.CellFormat(cw, 6, chord.Literal, "0", 0, "", false, 0, "")
+						pdf.SetXY(preX+2, preY-5)
+					}
 
 					pdf.SetXY(postLyricX, postLyricY)
 				}
