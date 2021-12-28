@@ -47,8 +47,10 @@ func (l *Lexer) Lex() (types.Position, types.TokenType, string) {
 			startPos := l.pos
 			chord := l.lexChord()
 			return startPos, types.Chord, chord
-		// case ']':
-		// 	return l.pos, types.CloseChord, ""
+		case '{':
+			startPos := l.pos
+			chord := l.lexDirective()
+			return startPos, types.Chord, chord
 		default:
 			if unicode.IsSpace(r) {
 				return l.pos, types.Space, " "
@@ -125,5 +127,31 @@ func (l *Lexer) lexChord() string {
 		}
 
 		return chords[chrd] // translate unsupported notations and return
+	}
+}
+
+// will need to look at spec and detemine how many top-level directives
+// there are vs. inline and figure out a way to pass the accodingly to the
+// output formatter. something like {soc} may be really tricky to deal with
+// in the outut formatter althoug i guess you just apply a style until
+// the closing bracket is found
+func (l *Lexer) lexDirective() string {
+	var drctv string
+	for {
+		r, _, err := l.reader.ReadRune()
+		if err != nil {
+			if err == io.EOF {
+				// reached end of chord without a closing bracket, return what we have
+				return drctv
+			}
+		}
+
+		l.pos.Column++
+		if r != '}' {
+			drctv = drctv + string(r)
+			continue
+		}
+
+		return drctv
 	}
 }
