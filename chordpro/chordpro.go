@@ -1,6 +1,7 @@
 package chordpro
 
 import (
+	"fmt"
 	"io"
 
 	"github.com/chris-skud/chordpro2/chordpro/parse"
@@ -32,8 +33,9 @@ func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 
 	l := parse.NewLexer(reader)
 	var tokens []types.Token2
-	var offset int
-	var currLine int
+	// var offset int
+	// var currLine int
+	var activeChord *types.Chord2
 	for {
 		pos, tok, lit := l.Lex()
 		if tok == types.EOF {
@@ -42,22 +44,42 @@ func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 
 		// adjust the position of the chord to exclude the opening square bracket
 		if tok == types.Chord {
-
-			// move currLine to next line and reset offset if processing new line
-			if pos.Line > currLine {
-				// move to the next line and reset chord count
-				currLine = pos.Line
-				offset = 0
+			activeChord = &types.Chord2{
+				RelativePos: 0,
+				Literal:     lit,
 			}
 
+			// move currLine to next line and reset offset if processing new line
+			// if pos.Line > currLine {
+			// 	// move to the next line and reset chord count
+			// 	currLine = pos.Line
+			// 	offset = 0
+			// }
+
 			// the offset is a sum of characters that includes "[" + "chord" + "]"
-			pos.Column = pos.Column - 1 - offset // account for opening bracket
+			// pos.Column = pos.Column - 1 - offset // account for opening bracket
 
 			// add this chord to the offset for the next iteration, including 2 spaces for open/closed brackets
-			offset = offset + len(lit) + 2
+			// offset = offset + len(lit) + 2
 		}
 
-		tokens = append(tokens, types.Token2{Pos: types.Position{Line: pos.Line, Column: pos.Column}, Typ: tok, Literal: lit})
+		token2 := types.Token2{
+			Pos: types.Position{
+				Line:   pos.Line,
+				Column: pos.Column,
+			},
+			Typ: tok, Literal: lit,
+		}
+		if tok == types.Lyric && activeChord != nil {
+			token2.Chords = append(
+				token2.Chords,
+				*activeChord,
+			)
+			activeChord = nil
+		}
+
+		tokens = append(tokens, token2)
+		fmt.Printf("\n%+v\n", token2)
 	}
 
 	// convert tokens slice into typed rows of token slices,

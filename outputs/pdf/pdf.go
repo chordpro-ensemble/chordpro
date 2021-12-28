@@ -1,8 +1,6 @@
 package pdf
 
 import (
-	"encoding/json"
-	"fmt"
 	"io"
 	"strings"
 
@@ -32,8 +30,8 @@ func (p *Processor) Process(sheetLines []types.SheetLine, w io.Writer) error {
 	pdf.Cell(wd, 9, title)
 	pdf.Ln(10)
 
-	b, _ := json.MarshalIndent(sheetLines, "", "  ")
-	fmt.Println(string(b))
+	// b, _ := json.MarshalIndent(sheetLines, "", "  ")
+	// fmt.Println(string(b))
 
 	for _, line := range sheetLines {
 		switch line.Type {
@@ -73,20 +71,20 @@ func (p *Processor) Process(sheetLines []types.SheetLine, w io.Writer) error {
 				// fmt.Println(lyricToken.Literal)
 				// lyrics += lyricToken.Literal
 
-				thisCol := lyricToken.Pos.Column
+				// thisCol := lyricToken.Pos.Column
 				var chord string
-				for _, chordToken := range line.LyricChordSet.Chords {
-					fmt.Println(chordToken.Literal)
+				// for _, chordToken := range line.LyricChordSet.Chords {
+				// 	// fmt.Println(chordToken.Literal)
 
-					// need to offset the column to account for length of chord literal
+				// 	// need to offset the column to account for length of chord literal
 
-					if chordToken.Pos.Column == thisCol {
-						chord = chordToken.Literal
-						break
-					}
-				}
+				// 	if chordToken.Pos.Column == thisCol {
+				// 		chord = chordToken.Literal
+				// 		break
+				// 	}
+				// }
 
-				fmt.Println(chord)
+				// fmt.Println(chord)
 
 				preX, preY := pdf.GetXY()
 				// p, _ := pdf.GetFontSize()
@@ -94,14 +92,22 @@ func (p *Processor) Process(sheetLines []types.SheetLine, w io.Writer) error {
 				w := pdf.GetStringWidth(lyricToken.Literal)
 
 				pdf.CellFormat(w, 6, lyricToken.Literal, "0", 0, "L", false, 0, "")
-				if chord != "" {
+				if len(lyricToken.Chords) > 0 {
 					postLyricX, postLyricY := pdf.GetXY()
-					pdf.SetXY(preX, preY-10)
+					pdf.SetXY(preX, preY-5)
 					cw := pdf.GetStringWidth(chord)
-					pdf.CellFormat(cw, 6, chord, "0", 0, "", false, 0, "")
+					pdf.CellFormat(cw, 6, lyricToken.Chords[0].Literal, "0", 0, "", false, 0, "")
 
 					pdf.SetXY(postLyricX, postLyricY)
 				}
+				// if chord != "" {
+				// 	postLyricX, postLyricY := pdf.GetXY()
+				// 	pdf.SetXY(preX, preY-10)
+				// 	cw := pdf.GetStringWidth(chord)
+				// 	pdf.CellFormat(cw, 6, chord, "0", 0, "", false, 0, "")
+
+				// 	pdf.SetXY(postLyricX, postLyricY)
+				// }
 
 			}
 			// pdf.CellFormat(200, 6, lyrics, "0", 0, "", false, 0, "")

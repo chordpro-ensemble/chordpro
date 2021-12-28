@@ -26,6 +26,7 @@ func NewLexer(reader io.Reader) *Lexer {
 // the token's type, and the literal value.
 func (l *Lexer) Lex() (types.Position, types.TokenType, string) {
 	// keep looping until we return a token
+	// if it's a chord being procssed, we need to correlate it to
 	for {
 		r, _, err := l.reader.ReadRune()
 		if err != nil {
