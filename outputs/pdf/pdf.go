@@ -1,7 +1,6 @@
 package pdf
 
 import (
-	"fmt"
 	"io"
 	"strings"
 
@@ -25,7 +24,7 @@ func (p *Processor) Process(sheetLines []types.SheetLine, w io.Writer) error {
 	pdf.SetTitle(title, true)
 
 	// header
-	pdf.SetFont("Courier", "", 12)
+	pdf.SetFont("Helvetica", "", 12)
 	wd := pdf.GetStringWidth(title) + 6
 	pdf.SetX((210 - wd) / 2)
 	pdf.Cell(wd, 9, title)
@@ -43,8 +42,6 @@ func (p *Processor) Process(sheetLines []types.SheetLine, w io.Writer) error {
 				lyricToken.Literal = strings.ReplaceAll(lyricToken.Literal, "’", "'")
 
 				preX, preY := pdf.GetXY()
-				// p, _ := pdf.GetFontSize()
-				// w := float64(len(lyricToken.Literal)) * p
 				w := pdf.GetStringWidth(lyricToken.Literal)
 
 				pdf.CellFormat(w, 6, lyricToken.Literal, "0", 0, "L", false, 0, "")
@@ -52,7 +49,7 @@ func (p *Processor) Process(sheetLines []types.SheetLine, w io.Writer) error {
 					postLyricX, postLyricY := pdf.GetXY()
 					pdf.SetXY(preX, preY-5)
 					for _, chord := range lyricToken.Chords {
-						fmt.Println(chord.Literal)
+						// fmt.Println(chord.Literal)
 						cw := pdf.GetStringWidth(chord.Literal)
 						pdf.CellFormat(cw, 6, chord.Literal, "0", 0, "", false, 0, "")
 						pdf.SetXY(preX+2, preY-5)

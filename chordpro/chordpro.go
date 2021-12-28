@@ -1,7 +1,6 @@
 package chordpro
 
 import (
-	"fmt"
 	"io"
 
 	"github.com/chris-skud/chordpro2/chordpro/parse"
@@ -66,7 +65,7 @@ func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 		}
 
 		tokens = append(tokens, token2)
-		fmt.Printf("\n%+v\n", token2)
+		// fmt.Printf("\n%+v\n", token2)
 	}
 
 	// convert tokens slice into typed rows of token slices,
