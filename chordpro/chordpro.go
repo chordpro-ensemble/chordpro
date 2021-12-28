@@ -48,19 +48,6 @@ func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 				RelativePos: 0,
 				Literal:     lit,
 			}
-
-			// move currLine to next line and reset offset if processing new line
-			// if pos.Line > currLine {
-			// 	// move to the next line and reset chord count
-			// 	currLine = pos.Line
-			// 	offset = 0
-			// }
-
-			// the offset is a sum of characters that includes "[" + "chord" + "]"
-			// pos.Column = pos.Column - 1 - offset // account for opening bracket
-
-			// add this chord to the offset for the next iteration, including 2 spaces for open/closed brackets
-			// offset = offset + len(lit) + 2
 		}
 
 		token2 := types.Token2{
@@ -113,21 +100,6 @@ func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 	check(
 		p.outputProcessor.Process(sheetLines, writer),
 	)
-
-	// lineCount := tokens[len(tokens)-1].Pos.Line
-	// blocks := make([]types.ContentBlock, lineCount+1)
-	// for _, token := range tokens {
-	// 	blockPos := token.Pos.Line - 1 // adjust for 0 based slice
-	// 	switch token.Typ {
-	// 	case types.Lyric:
-	// 		blocks[blockPos].Content += token.Literal
-	// 	case types.Chord:
-	// 		blocks[blockPos].Content += token.Literal
-	// 	}
-
-	// }
-
-	// contentBlocks := []types.ContentBlock{}
 
 	return nil
 }

@@ -36,56 +36,15 @@ func (p *Processor) Process(sheetLines []types.SheetLine, w io.Writer) error {
 	for _, line := range sheetLines {
 		switch line.Type {
 		case types.LyricChord:
-
-			// Process the chord line if there are chords
-			// maybe I should just write an empty line here
-			// to be filled in the next line.
-			if len(line.LyricChordSet.Chords) != 0 {
-				pdf.SetX(5)
-				// var chords string
-				// for _, chordToken := range line.LyricChordSet.Chords {
-				// 	pad := spaces(chordToken.Pos.Column - len(chords))
-				// 	chords += pad + chordToken.Literal
-				// }
-				// pdf.CellFormat(200, 6, chords, "0", 0, "", false, 0, "")
-				pdf.Ln(-1)
-			}
-
 			// Process the lyrics line
 			pdf.SetX(5)
-			// var lyrics string
-			// if the the lyric had a reference to any chords contained within, then you could process the lyric in one loop and position the chords while writing the lyric...
-			// type Token struct {
-			// 	Pos     Position
-			// 	Typ     TokenType
-			// 	Literal string
-			//
-			// }
 			for _, lyricToken := range line.LyricChordSet.Lyrics {
 
 				// ok, this is a hack around what may be a larger
 				// issue with the pdf package not properly supporting utf-8 chars
 				lyricToken.Literal = strings.ReplaceAll(lyricToken.Literal, "’", "'")
 
-				// add current literal to lyrics string
-				// fmt.Println(lyricToken.Literal)
-				// lyrics += lyricToken.Literal
-
-				// thisCol := lyricToken.Pos.Column
 				var chord string
-				// for _, chordToken := range line.LyricChordSet.Chords {
-				// 	// fmt.Println(chordToken.Literal)
-
-				// 	// need to offset the column to account for length of chord literal
-
-				// 	if chordToken.Pos.Column == thisCol {
-				// 		chord = chordToken.Literal
-				// 		break
-				// 	}
-				// }
-
-				// fmt.Println(chord)
-
 				preX, preY := pdf.GetXY()
 				// p, _ := pdf.GetFontSize()
 				// w := float64(len(lyricToken.Literal)) * p
@@ -100,15 +59,6 @@ func (p *Processor) Process(sheetLines []types.SheetLine, w io.Writer) error {
 
 					pdf.SetXY(postLyricX, postLyricY)
 				}
-				// if chord != "" {
-				// 	postLyricX, postLyricY := pdf.GetXY()
-				// 	pdf.SetXY(preX, preY-10)
-				// 	cw := pdf.GetStringWidth(chord)
-				// 	pdf.CellFormat(cw, 6, chord, "0", 0, "", false, 0, "")
-
-				// 	pdf.SetXY(postLyricX, postLyricY)
-				// }
-
 			}
 			// pdf.CellFormat(200, 6, lyrics, "0", 0, "", false, 0, "")
 			pdf.Ln(10)
@@ -122,8 +72,4 @@ func (p *Processor) Process(sheetLines []types.SheetLine, w io.Writer) error {
 	// https://github.com/ChordPro/chordpro/blob/24ee42236c093063c03cda9f7545e9b9fd117c1a/lib/App/Music/ChordPro/Output/PDF.pm#L1292
 
 	return pdf.Output(w)
-}
-
-func spaces(count int) string {
-	return strings.Repeat(" ", count)
 }
