@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/chris-skud/chordpro2/chordpro"
-	"github.com/chris-skud/chordpro2/outputs/pdf"
+	"github.com/chris-skud/chordpro2/formatters/pdf"
 	"github.com/spf13/cobra"
 )
 
