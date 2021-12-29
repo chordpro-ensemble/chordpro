@@ -16,7 +16,7 @@ func (m *MetaDirectives) Set(literal string) {
 	directiveName := parts[0]
 	directiveValue := strings.TrimSpace(parts[1])
 	switch directiveName {
-	case "title":
+	case "title", "t":
 		m.Title = directiveValue
 	}
 }
