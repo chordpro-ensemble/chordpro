@@ -49,8 +49,8 @@ func (l *Lexer) Lex() (types.Position, types.TokenType, string) {
 			return startPos, types.Chord, chord
 		case '{':
 			startPos := l.pos
-			chord := l.lexDirective()
-			return startPos, types.Chord, chord
+			directive := l.lexDirective()
+			return startPos, types.MetaDirective, directive
 		default:
 			if unicode.IsSpace(r) {
 				return l.pos, types.Space, " "
@@ -149,6 +149,7 @@ func (l *Lexer) lexDirective() string {
 		}
 
 		l.pos.Column++
+		// could look for a linebreak as directives should always be on their own line
 		if r != '}' {
 			drctv = drctv + string(r)
 			continue

@@ -8,7 +8,7 @@ import (
 )
 
 type OutputProcessor interface {
-	Process(sheetLines []types.SheetLine, w io.Writer) error
+	Process(metaDirectives types.MetaDirectives, sheetLines []types.SheetLine, w io.Writer) error
 }
 
 func NewProcessor(outputProcessor OutputProcessor) *Processor {
@@ -29,6 +29,7 @@ func check(e error) {
 }
 
 func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
+	metaDirectives := types.MetaDirectives{}
 
 	l := parse.NewLexer(reader)
 	var tokens []types.Token2
@@ -41,14 +42,24 @@ func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 			break
 		}
 
-		// adjust the position of the chord to exclude the opening square bracket
+		// set an active chord to later associate it to a lyric
 		if tok == types.Chord {
 			activeChord = &types.Chord2{
 				RelativePos: 0,
 				Literal:     lit,
 			}
+			// chords are added to lyric tokens and not
+			// tokens themselves
+			continue
 		}
 
+		if tok == types.MetaDirective {
+			metaDirectives.Set(lit)
+			// meta directives are not added as tokens
+			continue
+		}
+
+		// it's a lyric so add it to the slice of tokens
 		token2 := types.Token2{
 			Pos: types.Position{
 				Line:   pos.Line,
@@ -56,7 +67,7 @@ func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 			},
 			Typ: tok, Literal: lit,
 		}
-		if tok == types.Lyric && activeChord != nil {
+		if activeChord != nil {
 			token2.Chords = append(
 				token2.Chords,
 				*activeChord,
@@ -65,7 +76,6 @@ func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 		}
 
 		tokens = append(tokens, token2)
-		// fmt.Printf("\n%+v\n", token2)
 	}
 
 	// convert tokens slice into typed rows of token slices,
@@ -81,12 +91,12 @@ func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 	for _, token := range tokens {
 		linePos := token.Pos.Line
 		switch token.Typ {
-		case types.Chord:
-			sheetLines[linePos].Type = types.LyricChord
-			sheetLines[linePos].LyricChordSet.Chords = append(
-				sheetLines[linePos].LyricChordSet.Chords,
-				token,
-			)
+		// case types.Chord:
+		// 	sheetLines[linePos].Type = types.LyricChord
+		// 	sheetLines[linePos].LyricChordSet.Chords = append(
+		// 		sheetLines[linePos].LyricChordSet.Chords,
+		// 		token,
+		// 	)
 		case types.Lyric, types.Space:
 			sheetLines[linePos].Type = types.LyricChord
 			sheetLines[linePos].LyricChordSet.Lyrics = append(
@@ -97,7 +107,7 @@ func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 	}
 
 	check(
-		p.outputProcessor.Process(sheetLines, writer),
+		p.outputProcessor.Process(metaDirectives, sheetLines, writer),
 	)
 
 	return nil

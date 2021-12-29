@@ -13,11 +13,11 @@ type Processor struct{}
 // Processor is the PDF specific processing of the token stream (lexed song)
 // whose bytes are written to the passed writer. It does need knowledge
 // of the lexer grammar
-func (p *Processor) Process(sheetLines []types.SheetLine, w io.Writer) error {
+func (p *Processor) Process(metaDirectives types.MetaDirectives, sheetLines []types.SheetLine, w io.Writer) error {
 	pdf := gofpdf.New("P", "mm", "A4", "")
 	pdf.AddPage()
 
-	title := "Beautiful Song"
+	title := metaDirectives.Title
 
 	// file metadata
 	pdf.SetAuthor("Chris Skudlarczyk", false)
