@@ -37,7 +37,7 @@ func (p *Processor) Process(metaDirectives types.MetaDirectives, sheetLines []ty
 		case types.LineLyric:
 			// Process the lyrics line
 			pdf.SetX(5)
-			for _, lyricToken := range line.Lyrics {
+			for _, lyricToken := range line.LyricTokens {
 
 				// ok, this is a hack around what may be a larger
 				// issue with the pdf package not properly supporting utf-8 chars

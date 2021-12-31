@@ -9,6 +9,6 @@ const (
 
 type SheetLine struct {
 	Type                 SheetLineType
-	Lyrics               []Token
+	LyricTokens          []Token
 	EnvironmentDirective DirectiveData
 }

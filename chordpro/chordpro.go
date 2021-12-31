@@ -99,8 +99,8 @@ func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 		// 	)
 		case types.Lyric, types.Space:
 			sheetLines[linePos].Type = types.LineLyric
-			sheetLines[linePos].Lyrics = append(
-				sheetLines[linePos].Lyrics,
+			sheetLines[linePos].LyricTokens = append(
+				sheetLines[linePos].LyricTokens,
 				token,
 			)
 		case types.EnvironmentDirective:
