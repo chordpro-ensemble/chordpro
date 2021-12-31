@@ -49,8 +49,8 @@ func (l *Lexer) Lex() (types.Position, types.TokenType, string) {
 			return startPos, types.Chord, chord
 		case '{':
 			startPos := l.pos
-			directive := l.lexDirective()
-			return startPos, types.MetaDirective, directive
+			directiveType, directive := l.lexDirective()
+			return startPos, directiveType, directive
 		default:
 			if unicode.IsSpace(r) {
 				return l.pos, types.Space, " "
@@ -137,14 +137,14 @@ func (l *Lexer) lexChord() string {
 // the closing bracket is found
 
 // a directive may just have a special rule in that it's open and close are whole lines
-func (l *Lexer) lexDirective() string {
+func (l *Lexer) lexDirective() (types.TokenType, string) {
 	var drctv string
 	for {
 		r, _, err := l.reader.ReadRune()
 		if err != nil {
 			if err == io.EOF {
-				// reached end of chord without a closing bracket, return what we have
-				return drctv
+				// reached end of directive without a closing bracket, return what we have
+				return types.DirectiveTokenType(drctv), drctv
 			}
 		}
 
@@ -155,6 +155,6 @@ func (l *Lexer) lexDirective() string {
 			continue
 		}
 
-		return drctv
+		return types.DirectiveTokenType(drctv), drctv
 	}
 }

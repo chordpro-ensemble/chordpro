@@ -1,6 +1,7 @@
 package pdf
 
 import (
+	"fmt"
 	"io"
 	"strings"
 
@@ -17,7 +18,7 @@ func (p *Processor) Process(metaDirectives types.MetaDirectives, sheetLines []ty
 	pdf := gofpdf.New("P", "mm", "A4", "")
 	pdf.AddPage()
 
-	title := metaDirectives.Title
+	title := metaDirectives.Title()
 
 	// file metadata
 	pdf.SetAuthor("Chris Skudlarczyk", false)
@@ -60,7 +61,8 @@ func (p *Processor) Process(metaDirectives types.MetaDirectives, sheetLines []ty
 			}
 			// pdf.CellFormat(200, 6, lyrics, "0", 0, "", false, 0, "")
 			pdf.Ln(10)
-
+		case types.LineEnvironmentDirective:
+			fmt.Println("yah")
 		//case types.Directive:
 		default:
 		}

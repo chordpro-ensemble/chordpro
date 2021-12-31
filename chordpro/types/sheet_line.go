@@ -4,6 +4,7 @@ type SheetLineType int
 
 const (
 	LyricChord SheetLineType = iota
+	LineEnvironmentDirective
 )
 
 type SheetLine struct {
