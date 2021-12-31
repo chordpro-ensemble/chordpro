@@ -32,19 +32,19 @@ func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 	metaDirectives := types.MetaDirectives{}
 
 	l := parse.NewLexer(reader)
-	var tokens []types.Token2
+	var tokens []types.Token
 	// var offset int
 	// var currLine int
-	var activeChord *types.Chord2
+	var activeChord *types.ChordToken
 	for {
-		pos, tok, lit := l.Lex()
-		if tok == types.EOF {
+		pos, typ, lit := l.Lex()
+		if typ == types.EOF {
 			break
 		}
 
 		// set an active chord to later associate it to a lyric
-		if tok == types.Chord {
-			activeChord = &types.Chord2{
+		if typ == types.Chord {
+			activeChord = &types.ChordToken{
 				RelativePos: 0,
 				Literal:     lit,
 			}
@@ -53,29 +53,29 @@ func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 			continue
 		}
 
-		if tok == types.MetaDirective {
+		if typ == types.MetaDirective {
 			metaDirectives.Set(lit)
 			// meta directives are not added as tokens
 			continue
 		}
 
 		// it's a lyric so add it to the slice of tokens
-		token2 := types.Token2{
+		Token := types.Token{
 			Pos: types.Position{
 				Line:   pos.Line,
 				Column: pos.Column,
 			},
-			Typ: tok, Literal: lit,
+			Typ: typ, Literal: lit,
 		}
 		if activeChord != nil {
-			token2.Chords = append(
-				token2.Chords,
+			Token.Chords = append(
+				Token.Chords,
 				*activeChord,
 			)
 			activeChord = nil
 		}
 
-		tokens = append(tokens, token2)
+		tokens = append(tokens, Token)
 	}
 
 	// convert tokens slice into typed rows of token slices,

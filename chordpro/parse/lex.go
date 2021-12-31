@@ -26,7 +26,6 @@ func NewLexer(reader io.Reader) *Lexer {
 // the token's type, and the literal value.
 func (l *Lexer) Lex() (types.Position, types.TokenType, string) {
 	// keep looping until we return a token
-	// if it's a chord being procssed, we need to correlate it to
 	for {
 		r, _, err := l.reader.ReadRune()
 		if err != nil {
@@ -80,8 +79,7 @@ func (l *Lexer) backup() {
 	l.pos.Column--
 }
 
-// lexLyric scans the input until the end of an lyric and then returns the
-// literal.
+// lexLyric scans input until the end of an lyric and returns the literal
 func (l *Lexer) lexLyric() string {
 	var lyr string
 	for {

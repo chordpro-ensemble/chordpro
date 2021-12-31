@@ -13,8 +13,8 @@ type SheetLine struct {
 }
 
 type LyricChordSet struct {
-	Chords []Token2
-	Lyrics []Token2
+	Chords []Token
+	Lyrics []Token
 }
 
 /*
