@@ -34,10 +34,10 @@ func (p *Processor) Process(metaDirectives types.MetaDirectives, sheetLines []ty
 	var chorusEnvironment bool
 	for _, line := range sheetLines {
 		switch line.Type {
-		case types.LyricChord:
+		case types.LineLyric:
 			// Process the lyrics line
 			pdf.SetX(5)
-			for _, lyricToken := range line.LyricChordSet.Lyrics {
+			for _, lyricToken := range line.Lyrics {
 
 				// ok, this is a hack around what may be a larger
 				// issue with the pdf package not properly supporting utf-8 chars

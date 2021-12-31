@@ -92,15 +92,15 @@ func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 		linePos := token.Pos.Line
 		switch token.Typ {
 		// case types.Chord:
-		// 	sheetLines[linePos].Type = types.LyricChord
-		// 	sheetLines[linePos].LyricChordSet.Chords = append(
-		// 		sheetLines[linePos].LyricChordSet.Chords,
+		// 	sheetLines[linePos].Type = types.LineLyric
+		// 	sheetLines[linePos].LineLyricSet.Chords = append(
+		// 		sheetLines[linePos].LineLyricSet.Chords,
 		// 		token,
 		// 	)
 		case types.Lyric, types.Space:
-			sheetLines[linePos].Type = types.LyricChord
-			sheetLines[linePos].LyricChordSet.Lyrics = append(
-				sheetLines[linePos].LyricChordSet.Lyrics,
+			sheetLines[linePos].Type = types.LineLyric
+			sheetLines[linePos].Lyrics = append(
+				sheetLines[linePos].Lyrics,
 				token,
 			)
 		case types.EnvironmentDirective:
