@@ -16,7 +16,7 @@ type Directive int
 
 const (
 	StartOfChorus Directive = iota
-	EndOfChorus   Directive = iota
+	EndOfChorus
 )
 
 func DirectiveTypeFromString() string {
@@ -66,9 +66,12 @@ func directiveParts(literal string) DirectiveData {
 func DirectiveTokenType(literal string) TokenType {
 	directiveData := directiveParts(literal)
 	switch directiveData.Name {
+	// this could ultimately be faster with a big regex
 	case "title", "t":
 		return MetaDirective
 	case "start_of_chorus", "soc":
+		return EnvironmentDirective
+	case "end_of_chorus", "eoc":
 		return EnvironmentDirective
 	default:
 		return Illegal

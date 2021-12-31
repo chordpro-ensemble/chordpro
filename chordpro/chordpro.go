@@ -60,7 +60,7 @@ func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 		}
 
 		// it's a lyric so add it to the slice of tokens
-		Token := types.Token{
+		token := types.Token{
 			Pos: types.Position{
 				Line:   pos.Line,
 				Column: pos.Column,
@@ -68,14 +68,14 @@ func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 			Typ: typ, Literal: lit,
 		}
 		if activeChord != nil {
-			Token.Chords = append(
-				Token.Chords,
+			token.Chords = append(
+				token.Chords,
 				*activeChord,
 			)
 			activeChord = nil
 		}
 
-		tokens = append(tokens, Token)
+		tokens = append(tokens, token)
 	}
 
 	// convert tokens slice into typed rows of token slices,
@@ -103,6 +103,12 @@ func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 				sheetLines[linePos].LyricChordSet.Lyrics,
 				token,
 			)
+		case types.EnvironmentDirective:
+			sheetLines[linePos].Type = types.LineEnvironmentDirective
+			sheetLines[linePos].EnvironmentDirective = types.DirectiveData{
+				Name: token.Literal,
+				// Label: "",
+			}
 		}
 	}
 

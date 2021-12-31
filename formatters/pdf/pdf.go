@@ -31,6 +31,7 @@ func (p *Processor) Process(metaDirectives types.MetaDirectives, sheetLines []ty
 	pdf.Cell(wd, 9, title)
 	pdf.Ln(10)
 
+	var chorusEnvironment bool
 	for _, line := range sheetLines {
 		switch line.Type {
 		case types.LyricChord:
@@ -44,6 +45,11 @@ func (p *Processor) Process(metaDirectives types.MetaDirectives, sheetLines []ty
 
 				preX, preY := pdf.GetXY()
 				w := pdf.GetStringWidth(lyricToken.Literal)
+				if chorusEnvironment {
+					pdf.SetFont("Helvetica", "", 16)
+				} else {
+					pdf.SetFont("Helvetica", "", 12)
+				}
 
 				pdf.CellFormat(w, 6, lyricToken.Literal, "0", 0, "L", false, 0, "")
 				if len(lyricToken.Chords) > 0 {
@@ -62,8 +68,15 @@ func (p *Processor) Process(metaDirectives types.MetaDirectives, sheetLines []ty
 			// pdf.CellFormat(200, 6, lyrics, "0", 0, "", false, 0, "")
 			pdf.Ln(10)
 		case types.LineEnvironmentDirective:
-			fmt.Println("yah")
-		//case types.Directive:
+			fmt.Println("in env directive")
+			fmt.Println(line.EnvironmentDirective.Name)
+			if line.EnvironmentDirective.Name == "soc" {
+				chorusEnvironment = true
+			}
+			if line.EnvironmentDirective.Name == "eoc" {
+				chorusEnvironment = false
+			}
+
 		default:
 		}
 	}

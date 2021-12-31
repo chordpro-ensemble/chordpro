@@ -8,8 +8,9 @@ const (
 )
 
 type SheetLine struct {
-	Type          SheetLineType
-	LyricChordSet LyricChordSet
+	Type                 SheetLineType
+	LyricChordSet        LyricChordSet
+	EnvironmentDirective DirectiveData
 }
 
 type LyricChordSet struct {
