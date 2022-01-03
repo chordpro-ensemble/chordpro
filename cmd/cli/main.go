@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"os"
 
@@ -21,6 +22,8 @@ var (
 
 	chordproFile string
 	outputFile   string
+	configFile   string
+	lyricsOnly   bool
 )
 
 func check(e error) {
@@ -30,10 +33,15 @@ func check(e error) {
 }
 
 func Run(cmd *cobra.Command, args []string) {
+	cfg := types.Config{}
+	if configFile != "" {
+		b, err := os.ReadFile(configFile)
+		check(err)
+		check(json.Unmarshal(b, &cfg))
+	}
+
 	processor := chordpro.NewProcessor(&pdf.Processor{
-		Config: types.Config{
-			LyricsOnly: false,
-		},
+		Config: cfg,
 	})
 
 	b, err := os.ReadFile(chordproFile)
@@ -52,6 +60,8 @@ func Run(cmd *cobra.Command, args []string) {
 func main() {
 	rootCmd.PersistentFlags().StringVarP(&chordproFile, "song", "s", "examples/simple.cho", "--song=~/awesome_song.cho")
 	rootCmd.PersistentFlags().StringVarP(&outputFile, "outputFile", "o", "examples/simple.pdf", "--outputFile=~/awesome_song.pdf")
+	rootCmd.PersistentFlags().StringVarP(&configFile, "configFile", "c", "", "--configFile=~/config.json")
+	rootCmd.PersistentFlags().BoolVarP(&lyricsOnly, "lyricsOnly", "l", false, "--lyricsOnly=true")
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 	}
