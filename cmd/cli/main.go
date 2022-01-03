@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/chris-skud/chordpro2/chordpro"
+	"github.com/chris-skud/chordpro2/chordpro/types"
 	"github.com/chris-skud/chordpro2/formatters/pdf"
 	"github.com/spf13/cobra"
 )
@@ -29,7 +30,11 @@ func check(e error) {
 }
 
 func Run(cmd *cobra.Command, args []string) {
-	processor := chordpro.NewProcessor(&pdf.Processor{})
+	processor := chordpro.NewProcessor(&pdf.Processor{
+		Config: types.Config{
+			LyricsOnly: true,
+		},
+	})
 
 	b, err := os.ReadFile(chordproFile)
 	check(err)

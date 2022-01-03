@@ -1,7 +1,6 @@
 package pdf
 
 import (
-	"fmt"
 	"io"
 	"strings"
 
@@ -9,7 +8,9 @@ import (
 	"github.com/phpdave11/gofpdf"
 )
 
-type Processor struct{}
+type Processor struct {
+	Config types.Config
+}
 
 // Processor is the PDF specific processing of the token stream (lexed song)
 // whose bytes are written to the passed writer. It does need knowledge
@@ -52,7 +53,7 @@ func (p *Processor) Process(metaDirectives types.MetaDirectives, sheetLines []ty
 				}
 
 				pdf.CellFormat(w, 6, lyricToken.Literal, "0", 0, "L", false, 0, "")
-				if len(lyricToken.Chords) > 0 {
+				if len(lyricToken.Chords) > 0 && !p.Config.LyricsOnly {
 					postLyricX, postLyricY := pdf.GetXY()
 					pdf.SetXY(preX, preY-5)
 					for _, chord := range lyricToken.Chords {
@@ -68,8 +69,6 @@ func (p *Processor) Process(metaDirectives types.MetaDirectives, sheetLines []ty
 			// pdf.CellFormat(200, 6, lyrics, "0", 0, "", false, 0, "")
 			pdf.Ln(10)
 		case types.LineEnvironmentDirective:
-			fmt.Println("in env directive")
-			fmt.Println(line.EnvironmentDirective.Name)
 			if line.EnvironmentDirective.Name == "soc" {
 				chorusEnvironment = true
 			}
