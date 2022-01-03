@@ -3,82 +3,16 @@ package chordpro
 type Config struct {
 	Include  []string `json:"include"`
 	Settings struct {
-		Strict              bool   `json:"strict"`
-		Lineinfo            bool   `json:"lineinfo"`
-		Titles              string `json:"titles"`
-		Columns             int    `json:"columns"`
-		SuppressEmptyChords bool   `json:"suppress-empty-chords"`
-		SuppressEmptyLyrics bool   `json:"suppress-empty-lyrics"`
-		LyricsOnly          bool   `json:"lyrics-only"`
-		Memorize            bool   `json:"memorize"`
-		InlineChords        bool   `json:"inline-chords"`
-		ChordsUnder         bool   `json:"chords-under"`
-		Transpose           int    `json:"transpose"`
-		Transcode           string `json:"transcode"`
-		Decapo              bool   `json:"decapo"`
-		Chordnames          string `json:"chordnames"`
-		Notenames           bool   `json:"notenames"`
+		Titles     string `json:"titles"`
+		LyricsOnly bool   `json:"lyrics-only"`
+		Transpose  int    `json:"transpose"`
 	} `json:"settings"`
-	Metadata struct {
-		Keys      []string `json:"keys"`
-		Strict    bool     `json:"strict"`
-		Separator string   `json:"separator"`
-	} `json:"metadata"`
-	Meta struct {
-	} `json:"meta"`
-	Dates struct {
-		Today struct {
-			Format string `json:"format"`
-		} `json:"today"`
-	} `json:"dates"`
-	User struct {
-		Name     string `json:"name"`
-		Fullname string `json:"fullname"`
-	} `json:"user"`
 	Instrument struct {
 		Type        string `json:"type"`
 		Description string `json:"description"`
 	} `json:"instrument"`
 	Tuning []string `json:"tuning"`
-	Notes  struct {
-		System  string        `json:"system"`
-		Sharp   []interface{} `json:"sharp"`
-		Flat    []interface{} `json:"flat"`
-		Movable bool          `json:"movable"`
-	} `json:"notes"`
-	Chords   []interface{} `json:"chords"`
-	Diagrams struct {
-		Auto   bool   `json:"auto"`
-		Show   string `json:"show"`
-		Sorted bool   `json:"sorted"`
-	} `json:"diagrams"`
-	Diagnostics struct {
-		Format string `json:"format"`
-	} `json:"diagnostics"`
-	Contents []struct {
-		Fields []string `json:"fields"`
-		Label  string   `json:"label"`
-		Line   string   `json:"line"`
-		Pageno string   `json:"pageno"`
-		Fold   bool     `json:"fold"`
-		Omit   bool     `json:"omit"`
-	} `json:"contents"`
-	Toc struct {
-		Title string `json:"title"`
-		Line  string `json:"line"`
-		Order string `json:"order"`
-	} `json:"toc"`
-	Delegates struct {
-		Abc struct {
-			Type    string `json:"type"`
-			Handler string `json:"handler"`
-		} `json:"abc"`
-		Ly struct {
-			Type    string `json:"type"`
-			Handler string `json:"handler"`
-		} `json:"ly"`
-	} `json:"delegates"`
-	Pdf struct {
+	Pdf    struct {
 		Info struct {
 			Title    string `json:"title"`
 			Author   string `json:"author"`
@@ -265,28 +199,4 @@ type Config struct {
 			Print   string `json:"print"`
 		} `json:"styles"`
 	} `json:"html"`
-	A2Crd struct {
-		InferTitles bool   `json:"infer-titles"`
-		Classifier  string `json:"classifier"`
-		Tabstop     int    `json:"tabstop"`
-	} `json:"a2crd"`
-	Parser struct {
-		Preprocess struct {
-			All       []interface{} `json:"all"`
-			Directive []interface{} `json:"directive"`
-			Songline  []interface{} `json:"songline"`
-		} `json:"preprocess"`
-	} `json:"parser"`
-	Debug struct {
-		Config  int `json:"config"`
-		Fonts   int `json:"fonts"`
-		Images  int `json:"images"`
-		Layout  int `json:"layout"`
-		Meta    int `json:"meta"`
-		Mma     int `json:"mma"`
-		Spacing int `json:"spacing"`
-		Song    int `json:"song"`
-		Abc     int `json:"abc"`
-		Ly      int `json:"ly"`
-	} `json:"debug"`
 }
