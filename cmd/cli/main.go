@@ -32,7 +32,7 @@ func check(e error) {
 func Run(cmd *cobra.Command, args []string) {
 	processor := chordpro.NewProcessor(&pdf.Processor{
 		Config: types.Config{
-			LyricsOnly: true,
+			LyricsOnly: false,
 		},
 	})
 
