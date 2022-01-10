@@ -5,7 +5,7 @@ import (
 	"io"
 	"unicode"
 
-	"github.com/chris-skud/chordpro2/chordpro/types"
+	"github.com/chordpro-ensemble/pkg/types"
 )
 
 // var openDirectiveRegex = regexp.MustCompile(`^\{~?&?`)

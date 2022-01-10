@@ -1,4 +1,4 @@
-package chordpro
+package config
 
 type Config struct {
 	LyricsOnly bool `json:"lyrics-only"`

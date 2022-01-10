@@ -1,10 +1,9 @@
-package chordpro
+package parse
 
 import (
 	"io"
 
-	"github.com/chris-skud/chordpro2/chordpro/parse"
-	"github.com/chris-skud/chordpro2/chordpro/types"
+	"github.com/chordpro-ensemble/pkg/types"
 )
 
 type OutputProcessor interface {
@@ -31,7 +30,7 @@ func check(e error) {
 func (p *Processor) Process(reader io.Reader, writer io.Writer) error {
 	metaDirectives := types.MetaDirectives{}
 
-	l := parse.NewLexer(reader)
+	l := NewLexer(reader)
 	var tokens []types.Token
 	// var offset int
 	// var currLine int

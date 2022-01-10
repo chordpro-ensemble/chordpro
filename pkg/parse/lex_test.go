@@ -5,9 +5,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/chordpro-ensemble/pkg/types"
 	"github.com/stretchr/testify/require"
-
-	"github.com/chris-skud/chordpro2/chordpro/types"
 )
 
 func TestLexer_Lex(t *testing.T) {

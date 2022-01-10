@@ -4,7 +4,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/chris-skud/chordpro2/chordpro/types"
+	"github.com/chordpro-ensemble/pkg/types"
 	"github.com/phpdave11/gofpdf"
 )
 

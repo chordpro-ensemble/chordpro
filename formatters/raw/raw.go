@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/chris-skud/chordpro2/chordpro/types"
+	"github.com/chordpro-ensemble/pkg/types"
 )
 
 type Processor struct{}

@@ -7,15 +7,15 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/chris-skud/chordpro2/chordpro"
-	"github.com/chris-skud/chordpro2/chordpro/types"
-	"github.com/chris-skud/chordpro2/formatters/pdf"
+	"github.com/chordpro-ensemble/formatters/pdf"
+	"github.com/chordpro-ensemble/pkg/parse"
+	"github.com/chordpro-ensemble/pkg/types"
 	"github.com/spf13/cobra"
 )
 
 var (
 	rootCmd = &cobra.Command{
-		Use:   "chordpro2",
+		Use:   "chordpro",
 		Short: "Convert chordpro formatted files to formatted, printable versions",
 		Run:   Run,
 	}
@@ -40,7 +40,7 @@ func Run(cmd *cobra.Command, args []string) {
 		check(json.Unmarshal(b, &cfg))
 	}
 
-	processor := chordpro.NewProcessor(&pdf.Processor{
+	processor := parse.NewProcessor(&pdf.Processor{
 		Config: cfg,
 	})
 

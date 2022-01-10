@@ -11,8 +11,8 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/chris-skud/chordpro2/chordpro"
-	"github.com/chris-skud/chordpro2/formatters/raw"
+	"github.com/chordpro-ensemble/formatters/raw"
+	"github.com/chordpro-ensemble/pkg/parse"
 	"github.com/gorilla/mux"
 )
 
@@ -24,7 +24,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/api", func(w http.ResponseWriter, r *http.Request) {
 		p := raw.Processor{}
-		cp := chordpro.NewProcessor(&p)
+		cp := parse.NewProcessor(&p)
 
 		reader := bufio.NewReader(bytes.NewReader(
 			[]byte("{title: hi}\n[A]This is a song"),

@@ -1,4 +1,4 @@
-package chordpro
+package parse
 
 import (
 	"testing"
